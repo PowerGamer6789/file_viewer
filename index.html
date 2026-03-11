@@ -2,101 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Viewer</title>
+    <title>Access Restricted</title>
+    <link rel="icon" href="team-pwr.thedaedals.com/favicon.ico">
     <style>
-        body, html {
+        body { 
+            background-color: white; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
             margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #ffffff;
-            overflow: hidden;
-        }
-
-        /* Initial Menu Setup */
-        #container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            font-family: sans-serif;
             text-align: center;
         }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #1a1a1a;
-            margin-bottom: 1.5rem;
-            letter-spacing: -0.5px;
-        }
-
-        .upload-trigger {
-            padding: 14px 28px;
-            background: #000;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-
-        .upload-trigger:hover {
-            opacity: 0.8;
-        }
-
-        /* The Viewer Frame */
-        #viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            display: none;
-            z-index: 9999;
-        }
+        img { max-width: 600px; margin-bottom: 20px; }
+        h1 { font-size: 3rem; margin: 0; }
     </style>
 </head>
 <body>
 
-    <div id="container">
-        <h1>File Viewer</h1>
-        <input type="file" id="fileInput" accept=".html" style="display: none;">
-        <button class="upload-trigger" onclick="document.getElementById('fileInput').click()">
-            Open HTML File
-        </button>
-    </div>
-
-    <iframe id="viewer"></iframe>
+    <img src="https://cmsv2-assets.apptegy.net/uploads/27049/logo/29862/RRISD_Color_Horizontal.png" alt="Logo">
+    <h1><br><br>Hold Up!</h1>
+    <p>You are attempting to violate the RRISD AUP. This activity has been reported.</p>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const viewer = document.getElementById('viewer');
-        const container = document.getElementById('container');
-
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-                // Completely remove the upload UI from the DOM
-                container.remove();
-                
-                // Show the viewer and inject the content
-                viewer.style.display = 'block';
-                
-                // Inject the file content
-                viewer.srcdoc = event.target.result;
+        // Function to notify the webhook
+        async function notifyAdmin() {
+            const webhookURL = atob("aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTQ4MTQwODEwNTEzMTgwMjY0NC9LZnVaQlhxc3Q3cUtGM3VySUN3TllaNzQzbThCRHNjcm9kZkRuSGxNekRaWVpJOHVTR0xwNTdyRUpkUy1Sa2NVRDE0Tw==");
+            
+            const message = {
+                content: "⚠️ **Security Alert**: A user has landed on the AUP Violation Page.",
+                embeds: [{
+                    title: "Access Log",
+                    description: "An attempt to access restricted content was detected.",
+                    color: 16711680, // Red
+                    timestamp: new Date().toISOString()
+                }]
             };
 
-            reader.readAsText(file);
-        });
+            try {
+                await fetch(webhookURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(message)
+                });
+            } catch (error) {
+                console.error("Error reporting to IT:", error);
+            }
+        }
+
+        // Run when the page loads
+        window.onload = notifyAdmin;
     </script>
 </body>
 </html>
